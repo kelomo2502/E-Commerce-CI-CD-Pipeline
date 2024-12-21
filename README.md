@@ -21,3 +21,15 @@ The goal is to automate the integration and deployment process for both componen
 2. Create `.github/workflows/` in the repository for github actions
 
 ## Task 3
+
+- Api setup
+To setup our simple nodejs express api we would carryout the folowing:
+
+1. Create an api folder in the root of our project
+2. Inside the api directory, we would initiate a package.json using `npm init -y`
+3. Still in the api directory, we would install our depndencies using:
+   `npm i express jest nodemon supertest`
+   - express: to spin up our server
+   - jest: a javascript library to run our test
+   - supertest: to initiate our http request during server test
+   - nodemon: to automatially keep our server running
