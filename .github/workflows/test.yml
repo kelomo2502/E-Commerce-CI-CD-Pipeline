@@ -18,5 +18,9 @@ jobs:
         with:
           node-version: '20.8.1'
 
-      - name: Run Jest tests
+      - name: Run tests frontend
+        working-directory: ./webapp
+        run: npm test
+      - name: Run tests backend
+        working-directory: ./api
         run: npm test
