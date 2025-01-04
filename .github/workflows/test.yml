@@ -1,4 +1,4 @@
-name: Tests
+name: Run Tests
 
 on:
   workflow_run:
@@ -13,25 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Debug top-level folder
+      - name: Debug current directory
+        run: pwd
+
+      - name: Debug folder structure
         run: ls -la
 
-      - name: Debug webapp folder
-        run: ls -la ./webapp
-
-      - name: Debug api folder
-        run: ls -la ./api
-
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20.8.1'
-
-      # Run Jest tests in webapp
-      - name: Run Jest tests in webapp
-        working-directory: ./webapp
-        run: npm test
-      - name: Run Jest tests in backend
+      # Backend (API) Tests
+      - name: Run tests for backend (API)
         working-directory: ./api
-        run: npm test
+        run: |
+          npm ci
+          npm test
+
+      # Frontend (WebApp) Tests
+      - name: Run tests for frontend (WebApp)
+        working-directory: ./webapp
+        run: |
+          npm ci
+          npm test
