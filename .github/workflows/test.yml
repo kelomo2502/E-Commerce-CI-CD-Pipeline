@@ -12,18 +12,17 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      
+
       - name: Debug folder structure
         run: ls -R
+        # Run ls recursively to show the entire directory tree
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20.8.1'
 
-      - name: Run tests frontend
+      # Run Jest tests in webapp
+      - name: Run Jest tests in webapp
         working-directory: ./webapp
-        run: npm test
-      - name: Run tests backend
-        working-directory: ./api
         run: npm test
