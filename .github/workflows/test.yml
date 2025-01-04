@@ -13,9 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Debug folder structure
-        run: ls -R
-        # Run ls recursively to show the entire directory tree
+      - name: Debug top-level folder
+        run: ls -la
+
+      - name: Debug webapp folder
+        run: ls -la ./webapp
+
+      - name: Debug api folder
+        run: ls -la ./api
+
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -24,8 +30,8 @@ jobs:
 
       # Run Jest tests in webapp
       - name: Run Jest tests in webapp
-        working-directory: /webapp/src/__tests__
+        working-directory: ./webapp
         run: npm test
       - name: Run Jest tests in backend
-        working-directory: /api/__tests__
+        working-directory: ./api
         run: npm test
