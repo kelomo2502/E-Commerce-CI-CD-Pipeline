@@ -24,8 +24,8 @@ jobs:
 
       # Run Jest tests in webapp
       - name: Run Jest tests in webapp
-        working-directory: ./webapp/src/__tests__
+        working-directory: /webapp/src/__tests__
         run: npm test
       - name: Run Jest tests in backend
-        working-directory: ./api/__tests__
+        working-directory: /api/__tests__
         run: npm test
