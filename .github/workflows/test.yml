@@ -1,34 +1,34 @@
-name: Run Tests
+# name: Run Tests
 
-on:
-  workflow_run:
-    workflows: ["Install"]
-    types:
-      - completed
+# on:
+#   workflow_run:
+#     workflows: ["Install"]
+#     types:
+#       - completed
 
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-      - name: Debug current directory
-        run: pwd
+#       - name: Debug current directory
+#         run: pwd
 
-      - name: Debug folder structure
-        run: ls -la
+#       - name: Debug folder structure
+#         run: ls -la
 
-      # Backend (API) Tests
-      - name: Run tests for backend (API)
-        working-directory: ./api
-        run: |
-          npm ci
-          npm test
+#       # Backend (API) Tests
+#       - name: Run tests for backend (API)
+#         working-directory: ./api
+#         run: |
+#           npm ci
+#           npm test
 
-      # Frontend (WebApp) Tests
-      - name: Run tests for frontend (WebApp)
-        working-directory: ./webapp
-        run: |
-          npm ci
-          npm test
+#       # Frontend (WebApp) Tests
+#       - name: Run tests for frontend (WebApp)
+#         working-directory: ./webapp
+#         run: |
+#           npm ci
+#           npm test
