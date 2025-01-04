@@ -1,8 +1,8 @@
-name: Run Tests
+name: Tests
 
 on:
   workflow_run:
-    workflows: ["Build"]
+    workflows: ["Install"]
     types:
       - completed
 
@@ -17,9 +17,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.8.1'
-
-      - name: Install dependencies
-        run: npm install
 
       - name: Run Jest tests
         run: npm test

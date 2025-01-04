@@ -33,3 +33,18 @@ To setup our simple nodejs express api we would carryout the folowing:
    - jest: a javascript library to run our test
    - supertest: to initiate our http request during server test
    - nodemon: to automatially keep our server running
+  
+## Task 4 Frontend application setup
+
+- In the webapp directory, we would set up a simple react app using `npx create-react-app`
+- we would basic pages like home, services to consume our backend API
+
+## Task 5 Continous Integration work flow
+
+- We would write a github workflow for both the backend and frontend to do the followings:
+
+1. Install dependencies
+2. Run tests
+3. Builds application
+
+To accomplish this task, we would first need to setup a  `.github/workflows/<filename>.yaml` in the project root directory
