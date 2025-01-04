@@ -1,0 +1,24 @@
+name: Install Dependencies
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install backend dependencies
+        working-directory: ./api
+        run: npm ci
+
+      - name: Install frontend dependencies
+        working-directory: ./webapp
+        run: npm ci
