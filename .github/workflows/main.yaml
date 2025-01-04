@@ -58,4 +58,6 @@ jobs:
 
       - name: Build frontend
         working-directory: ./webapp
-        run: npm run build
+        run: |
+          npm ci
+          npm run build
