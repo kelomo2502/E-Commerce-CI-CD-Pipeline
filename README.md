@@ -48,3 +48,103 @@ To setup our simple nodejs express api we would carryout the folowing:
 3. Builds application
 
 To accomplish this task, we would first need to setup a  `.github/workflows/<filename>.yaml` in the project root directory
+
+- install.yaml file
+
+  ```yaml
+  name: Install Dependencies
+
+  on:
+  push:
+    branches:
+      - main
+      - feature/*
+  pull_request:
+    branches:
+      - main
+
+  jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install backend dependencies
+        working-directory: ./api
+        run: npm ci
+
+      - name: Install frontend dependencies
+        working-directory: ./webapp
+        run: npm ci
+
+  ```
+
+- build.yaml file
+
+  ```yaml
+  name: Build
+
+  on:
+  workflow_run:
+    workflows: ["Install Dependencies"]
+    types:
+      - completed
+
+  jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build backend
+        working-directory: ./api
+        run: npm run build
+
+      - name: Build frontend
+        working-directory: ./webapp
+        run: |
+          npm ci
+          npm run build
+
+  ```
+
+- test.yaml file
+
+```yaml
+name: Run Tests updated
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types:
+      - completed
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install backend dependencies
+        working-directory: ./api
+        run: npm ci
+
+      - name: Run backend tests
+        working-directory: ./api
+        run: npm test
+
+      - name: Install frontend dependencies
+        working-directory: ./webapp
+        run: npm ci
+
+      - name: Run frontend tests
+        working-directory: ./webapp
+        run: npm test
+
+```
+
+## Task 6 Continous Integration work flow
+We would now add a Dockerfile to our project
