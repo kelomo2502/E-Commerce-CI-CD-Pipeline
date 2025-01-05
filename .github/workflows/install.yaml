@@ -3,7 +3,7 @@ name: Install Dependencies
 on:
   push:
     branches:
-      - main
+      - test
   pull_request:
     branches:
       - main
