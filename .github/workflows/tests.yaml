@@ -13,9 +13,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install backend dependencies
+        working-directory: ./api
+        run: npm ci
+
       - name: Run backend tests
         working-directory: ./api
         run: npm test
+
+      - name: Install frontend dependencies
+        working-directory: ./webapp
+        run: npm ci
 
       - name: Run frontend tests
         working-directory: ./webapp
