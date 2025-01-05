@@ -29,13 +29,11 @@ jobs:
       # Step 4: Build and push frontend image
       - name: Build and push frontend image
         run: |
-          cd webapp
-          docker build -t yourdockerhubusername/frontend:$GITHUB_SHA .
-          docker push yourdockerhubusername/frontend:$GITHUB_SHA
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/ecommerceFrontend:$GITHUB_SHA -f webapp/Dockerfile ./webapp
+          docker push ${{ secrets.DOCKER_USERNAME }}/ecommerceFrontend:$GITHUB_SHA
 
       # Step 5: Build and push backend image
       - name: Build and push backend image
         run: |
-          cd api
-          docker build -t yourdockerhubusername/backend:$GITHUB_SHA .
-          docker push yourdockerhubusername/backend:$GITHUB_SHA
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/ecommerceBackend:$GITHUB_SHA -f api/Dockerfile ./api
+          docker push ${{ secrets.DOCKER_USERNAME }}/ecommerceBackend:$GITHUB_SHA
