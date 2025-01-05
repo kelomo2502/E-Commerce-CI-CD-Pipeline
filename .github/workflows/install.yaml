@@ -3,7 +3,8 @@ name: Install Dependencies
 on:
   push:
     branches:
-      - test
+      - main
+      - feature/*
   pull_request:
     branches:
       - main
