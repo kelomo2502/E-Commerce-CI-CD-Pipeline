@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
     "start": "nodemon server.js",
-    "build": "echo 'no need to build'"
+    "build": "echo 'no need to build'",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
