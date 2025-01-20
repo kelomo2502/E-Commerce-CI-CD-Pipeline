@@ -147,4 +147,33 @@ jobs:
 ```
 
 ## Task 6 Continous Integration work flow
+
 We would now add a Dockerfile to our project
+
+- Frontend Dockerfile
+
+```DSL
+FROM node:20-alpine
+WORKDIR /usr/src/app
+COPY webapp/package*.json ./
+RUN npm ci
+COPY webapp/ .
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
+
+```
+
+- backend Dockerfile
+
+```DSL
+FROM node:20-alpine
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+EXPOSE 5000
+CMD ["npm", "start"]
+
+
+```
