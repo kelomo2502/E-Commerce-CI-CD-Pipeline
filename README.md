@@ -329,11 +329,13 @@ jobs:
       - name: Run backend tests
         working-directory: ./api
         run: |
+          npm ci
           npm test
 
       - name: Run frontend tests
         working-directory: ./webapp
         run: |
+          npm ci
           npm test
 
   build:
