@@ -1,23 +1,24 @@
-# Use the official Node.js image from Docker Hub
-FROM node:20-alpine
+# Dockerfile for React frontend
 
-# Set the working directory inside the container
-WORKDIR /usr/src/app
+FROM node:16-alpine
 
-# Copy package.json and package-lock.json to the working directory
-COPY ./webapp/package*.json ./
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm install
 
-# Copy the rest of the application code to the container
-COPY webapp/. .
+# Copy public folder and src folder
+COPY public ./public
+COPY src ./src
 
-# Build the React app
+# Build the application
 RUN npm run build
 
-# Expose the frontend port (e.g., 3000)
+# Expose port 3000
 EXPOSE 3000
 
-# Command to serve the built React app
+# Start the app
 CMD ["npm", "start"]
