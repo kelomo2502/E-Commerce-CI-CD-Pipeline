@@ -11,7 +11,7 @@ COPY ./webapp/package*.json ./
 RUN npm ci
 
 # Copy the rest of the application code to the container
-COPY ./webapp/ .
+COPY webapp/ .
 
 # Build the React app
 RUN npm run build
