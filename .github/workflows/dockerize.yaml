@@ -2,7 +2,7 @@ name: Dockerize and Push to Docker Hub
 
 on:
   workflow_run:
-    workflows: ["Run Tests updated"]
+    workflows: ["Build"]
     types:
       - completed
 
