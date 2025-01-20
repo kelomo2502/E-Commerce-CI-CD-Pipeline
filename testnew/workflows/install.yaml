@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - feature/*
-  pull_request:
-    branches:
-      - main
-
 jobs:
   install:
     runs-on: ubuntu-22.04
