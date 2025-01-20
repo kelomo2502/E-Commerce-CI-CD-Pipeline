@@ -275,9 +275,10 @@ deploy:
 
 - The pipline created above will ensure that whenever there is a change in our code, the workflow runs and deploys to our server
 
-## Performance and security
+## Task 9 Performance and security
 
 - To improve this workflow for performance, you can leverage caching for dependencies, Docker layers, and test results. Caching reduces redundant work and improves execution times, especially in CI pipelines. Here's the enhanced workflow:
+
 ```yaml
 name: CI Pipeline
 
@@ -285,6 +286,9 @@ on:
   push:
     branches:
       - feature/*
+  pull_request:
+    branches:
+      - main
 
 jobs:
   install:
@@ -294,25 +298,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Cache backend dependencies
+      - name: Cache npm dependencies (backend)
         uses: actions/cache@v3
         with:
-          path: ./api/node_modules
-          key: backend-dependencies-${{ runner.os }}-${{ hashFiles('./api/package-lock.json') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-backend-${{ hashFiles('**/api/package-lock.json') }}
           restore-keys: |
-            backend-dependencies-${{ runner.os }}-
+            ${{ runner.os }}-backend-
 
       - name: Install backend dependencies
         working-directory: ./api
         run: npm ci
 
-      - name: Cache frontend dependencies
+      - name: Cache npm dependencies (frontend)
         uses: actions/cache@v3
         with:
-          path: ./webapp/node_modules
-          key: frontend-dependencies-${{ runner.os }}-${{ hashFiles('./webapp/package-lock.json') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-frontend-${{ hashFiles('**/webapp/package-lock.json') }}
           restore-keys: |
-            frontend-dependencies-${{ runner.os }}-
+            ${{ runner.os }}-frontend-
 
       - name: Install frontend dependencies
         working-directory: ./webapp
@@ -352,18 +356,36 @@ jobs:
 
       - name: Build frontend
         working-directory: ./webapp
-        run: npm run build
+        run: |
+          npm ci
+          npm run build
 
   dockerize:
     name: Dockerize Application
     runs-on: ubuntu-22.04
     needs: build
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+
+      - name: Cache Docker layers for frontend
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/docker
+          key: ${{ runner.os }}-docker-frontend-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-frontend-
+
+      - name: Cache Docker layers for backend
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/docker
+          key: ${{ runner.os }}-docker-backend-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-backend-
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -371,29 +393,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: docker-cache-${{ runner.os }}-${{ github.sha }}
-          restore-keys: |
-            docker-cache-${{ runner.os }}-
-
       - name: Build and push frontend image
         run: |
-          docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache \
-                             --cache-to=type=local,dest=/tmp/.buildx-cache \
-                             -t ${{ secrets.DOCKER_USERNAME }}/ecommercefrontend:${{ github.sha }} \
-                             -f webapp/Dockerfile ./webapp \
-                             --push
+          docker build --no-cache -t ${{ secrets.DOCKER_USERNAME }}/ecommercefrontend:${{ github.sha }} -f webapp/Dockerfile ./webapp
+          docker push ${{ secrets.DOCKER_USERNAME }}/ecommercefrontend:${{ github.sha }}
 
       - name: Build and push backend image
         run: |
-          docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache \
-                             --cache-to=type=local,dest=/tmp/.buildx-cache \
-                             -t ${{ secrets.DOCKER_USERNAME }}/ecommercebackend:${{ github.sha }} \
-                             -f api/Dockerfile ./api \
-                             --push
+          docker build --no-cache -t ${{ secrets.DOCKER_USERNAME }}/ecommercebackend:${{ github.sha }} -f api/Dockerfile ./api
+          docker push ${{ secrets.DOCKER_USERNAME }}/ecommercebackend:${{ github.sha }}
 
   deploy:
     name: Deploy to AWS EC2
@@ -438,4 +446,9 @@ jobs:
 
           EOF
 
+
 ```
+
+## Task 10 Project Documentation
+
+- It is always a good practice to document the process involved in this assignment as we have done above by listing and explaining various steps involved, tools, technology and sample code
