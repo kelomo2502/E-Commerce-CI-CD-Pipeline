@@ -177,3 +177,5 @@ CMD ["npm", "start"]
 
 
 ```
+
+## Task 7 Deploy to Cloud(AWS)
