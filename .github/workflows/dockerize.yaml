@@ -8,7 +8,7 @@ on:
 
 jobs:
   dockerize:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       # Step 1: Checkout the code
