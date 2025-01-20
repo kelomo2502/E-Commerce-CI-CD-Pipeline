@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - feature/*
+  pull_request:
+    branches:
+      - main
 
 jobs:
   install:
@@ -13,25 +16,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Cache backend dependencies
-        uses: actions/cache@v3
-        with:
-          path: ./api/node_modules
-          key: backend-dependencies-${{ runner.os }}-${{ hashFiles('./api/package-lock.json') }}
-          restore-keys: |
-            backend-dependencies-${{ runner.os }}-
-
       - name: Install backend dependencies
         working-directory: ./api
         run: npm ci
-
-      - name: Cache frontend dependencies
-        uses: actions/cache@v3
-        with:
-          path: ./webapp/node_modules
-          key: frontend-dependencies-${{ runner.os }}-${{ hashFiles('./webapp/package-lock.json') }}
-          restore-keys: |
-            frontend-dependencies-${{ runner.os }}-
 
       - name: Install frontend dependencies
         working-directory: ./webapp
@@ -45,25 +32,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install testing dependencies (backend)
-        working-directory: ./api
-        run: |
-          npm install jest supertest --save-dev
-
       - name: Run backend tests
         working-directory: ./api
         run: |
-          npx jest
-
-      - name: Install testing dependencies (frontend)
-        working-directory: ./webapp
-        run: |
-          npm install jest --save-dev
+          npm ci
+          npm test
 
       - name: Run frontend tests
         working-directory: ./webapp
         run: |
-          npx jest
+          npm ci
+          npm test
 
   build:
     name: Build Application
@@ -79,14 +58,16 @@ jobs:
 
       - name: Build frontend
         working-directory: ./webapp
-        run: npm run build
+        run: |
+          npm ci
+          npm run build
 
   dockerize:
     name: Dockerize Application
     runs-on: ubuntu-22.04
     needs: build
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
@@ -98,29 +79,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: docker-cache-${{ runner.os }}-${{ github.sha }}
-          restore-keys: |
-            docker-cache-${{ runner.os }}-
-
       - name: Build and push frontend image
         run: |
-          docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache \
-                             --cache-to=type=local,dest=/tmp/.buildx-cache \
-                             -t ${{ secrets.DOCKER_USERNAME }}/ecommercefrontend:${{ github.sha }} \
-                             -f webapp/Dockerfile ./webapp \
-                             --push
+          docker build --no-cache -t ${{ secrets.DOCKER_USERNAME }}/ecommercefrontend:${{ github.sha }} -f webapp/Dockerfile ./webapp
+          docker push ${{ secrets.DOCKER_USERNAME }}/ecommercefrontend:${{ github.sha }}
 
       - name: Build and push backend image
         run: |
-          docker buildx build --cache-from=type=local,src=/tmp/.buildx-cache \
-                             --cache-to=type=local,dest=/tmp/.buildx-cache \
-                             -t ${{ secrets.DOCKER_USERNAME }}/ecommercebackend:${{ github.sha }} \
-                             -f api/Dockerfile ./api \
-                             --push
+          docker build --no-cache -t ${{ secrets.DOCKER_USERNAME }}/ecommercebackend:${{ github.sha }} -f api/Dockerfile ./api
+          docker push ${{ secrets.DOCKER_USERNAME }}/ecommercebackend:${{ github.sha }}
 
   deploy:
     name: Deploy to AWS EC2
