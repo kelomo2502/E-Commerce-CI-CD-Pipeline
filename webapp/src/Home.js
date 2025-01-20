@@ -9,7 +9,7 @@ const Home = () => {
   // Fetch Home Data
   const fetchHomeData = async () => {
     try {
-      const response = await axios.get("http://3.238.194:5000/");
+      const response = await axios.get("http://3.238.194.20:5000/");
       setHomeData(response.data.message);
       console.log(response.data.message)
      
@@ -21,7 +21,7 @@ const Home = () => {
   // Fetch Services Data
   const fetchServicesData = async () => {
     try {
-      const response = await axios.get("http://3.238.194:5000/services");
+      const response = await axios.get("http://3.238.194.20:5000/services");
       setServicesData(response.data.message);
    
     } catch (err) {
